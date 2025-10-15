@@ -1,0 +1,116 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+secrets/
+credentials/
+
+# Data files (exclude large datasets from git)
+*.csv
+*.parquet
+*.h5
+*.hdf5
+*.db
+*.sqlite
+*.sqlite3
+data/raw/
+data/processed/
+!data/.gitkeep
+
+# Database volumes (PostgreSQL/TimescaleDB data - NEVER commit these)
+data/postgres_data/
+data/pgadmin_data/
+data/postgres_data_*/
+infrastructure/database/volumes/
+
+# Jupyter notebook outputs
+research/*.png
+research/*.jpg
+research/*.jpeg
+
+# Logs
+*.log
+logs/
+!monitoring/.gitkeep
+
+# Backtest results
+backtests/results/
+backtests/cache/
+!backtesting/.gitkeep
+
+# Trading state (don't commit live positions/orders)
+execution/state/
+*.pickle
+*.pkl
+
+# Documentation builds
+docs/_build/
+site/
+
+# OS files
+Thumbs.db
+

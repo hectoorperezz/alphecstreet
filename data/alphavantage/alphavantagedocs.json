@@ -1,0 +1,1187 @@
+{
+    "api_name": "Alpha Vantage API",
+    "base_url": "https://www.alphavantage.co/query",
+    "description": "APIs agrupadas en 8 categorías: Core Time Series Stock Data, US Options Data, Alpha Intelligence, Fundamental Data, Physical and Crypto Currencies, Commodities, Economic Indicators, y Technical Indicators",
+    "api_key_required": true,
+    "api_key_url": "https://www.alphavantage.co/support/#api-key",
+    
+    "categories": {
+      "time_series_stock": {
+        "name": "Time Series Stock Data APIs",
+        "description": "APIs que proveen datos de acciones globales en 4 resoluciones temporales: diaria, semanal, mensual e intradiaria, con más de 20 años de datos históricos",
+        "endpoints": {
+          "TIME_SERIES_INTRADAY": {
+            "function": "TIME_SERIES_INTRADAY",
+            "description": "Retorna series temporales intradiarias OHLCV (Open, High, Low, Close, Volume) actuales e históricas con más de 20 años de profundidad",
+            "parameters": {
+              "required": {
+                "function": "TIME_SERIES_INTRADAY",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "interval": "Intervalo de tiempo: 1min, 5min, 15min, 30min, 60min",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "adjusted": "true (default) para datos ajustados por splits/dividendos, false para datos raw",
+                "extended_hours": "true (default) incluye pre-market y post-market (4:00am-8:00pm ET), false solo horario regular (9:30am-4:00pm ET)",
+                "month": "Mes específico en formato YYYY-MM (ejemplo: 2009-01). Cualquier mes desde 2000-01",
+                "outputsize": "compact (default, últimos 100 puntos) o full (últimos 30 días o mes completo si se especifica month)",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=demo",
+              "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&outputsize=full&apikey=demo",
+              "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&month=2009-01&outputsize=full&apikey=demo"
+            ],
+            "notes": "Datos intradiarios se actualizan al final de cada día. Para datos en tiempo real o con 15 minutos de delay, se requiere membresía premium"
+          },
+          "TIME_SERIES_DAILY": {
+            "function": "TIME_SERIES_DAILY",
+            "description": "Retorna series temporales diarias (fecha, apertura, máximo, mínimo, cierre, volumen) con más de 20 años de datos históricos",
+            "parameters": {
+              "required": {
+                "function": "TIME_SERIES_DAILY",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "outputsize": "compact (default, últimos 100 puntos) o full (20+ años completos)",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=demo",
+              "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&outputsize=full&apikey=demo",
+              "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=TSCO.LON&outputsize=full&apikey=demo"
+            ],
+            "supported_exchanges": {
+              "US": "IBM",
+              "UK_London": "TSCO.LON",
+              "Canada_Toronto": "SHOP.TRT",
+              "Canada_Toronto_Venture": "GPV.TRV",
+              "Germany_XETRA": "MBG.DEX",
+              "India_BSE": "RELIANCE.BSE",
+              "China_Shanghai": "600104.SHH",
+              "China_Shenzhen": "000002.SHZ"
+            }
+          },
+          "TIME_SERIES_DAILY_ADJUSTED": {
+            "function": "TIME_SERIES_DAILY_ADJUSTED",
+            "description": "Retorna valores diarios OHLCV, valores de cierre ajustados y eventos históricos de splits/dividendos con más de 20 años de datos",
+            "premium": true,
+            "parameters": {
+              "required": {
+                "function": "TIME_SERIES_DAILY_ADJUSTED",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "outputsize": "compact (default, últimos 100 puntos) o full (20+ años completos)",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=IBM&apikey=demo",
+              "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=IBM&outputsize=full&apikey=demo"
+            ]
+          },
+          "TIME_SERIES_WEEKLY": {
+            "function": "TIME_SERIES_WEEKLY",
+            "description": "Retorna series temporales semanales (último día de trading de cada semana) con más de 20 años de datos",
+            "parameters": {
+              "required": {
+                "function": "TIME_SERIES_WEEKLY",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol=IBM&apikey=demo"
+            ]
+          },
+          "TIME_SERIES_WEEKLY_ADJUSTED": {
+            "function": "TIME_SERIES_WEEKLY_ADJUSTED",
+            "description": "Retorna series temporales semanales ajustadas con dividendos, con más de 20 años de datos",
+            "parameters": {
+              "required": {
+                "function": "TIME_SERIES_WEEKLY_ADJUSTED",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=IBM&apikey=demo"
+            ]
+          },
+          "TIME_SERIES_MONTHLY": {
+            "function": "TIME_SERIES_MONTHLY",
+            "description": "Retorna series temporales mensuales (último día de trading de cada mes) con más de 20 años de datos",
+            "parameters": {
+              "required": {
+                "function": "TIME_SERIES_MONTHLY",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=IBM&apikey=demo"
+            ]
+          },
+          "TIME_SERIES_MONTHLY_ADJUSTED": {
+            "function": "TIME_SERIES_MONTHLY_ADJUSTED",
+            "description": "Retorna series temporales mensuales ajustadas con dividendos, con más de 20 años de datos",
+            "parameters": {
+              "required": {
+                "function": "TIME_SERIES_MONTHLY_ADJUSTED",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=IBM&apikey=demo"
+            ]
+          },
+          "GLOBAL_QUOTE": {
+            "function": "GLOBAL_QUOTE",
+            "description": "Retorna el último precio y volumen para un ticker específico",
+            "parameters": {
+              "required": {
+                "function": "GLOBAL_QUOTE",
+                "symbol": "Símbolo del ticker global (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
+            ],
+            "notes": "Se actualiza al final de cada día. Para datos en tiempo real o con 15 minutos de delay, se requiere membresía premium"
+          },
+          "REALTIME_BULK_QUOTES": {
+            "function": "REALTIME_BULK_QUOTES",
+            "description": "Retorna cotizaciones en tiempo real para símbolos de EE.UU. en lote (hasta 100 símbolos por request)",
+            "premium": true,
+            "parameters": {
+              "required": {
+                "function": "REALTIME_BULK_QUOTES",
+                "symbol": "Hasta 100 símbolos separados por coma (ejemplo: MSFT,AAPL,IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=REALTIME_BULK_QUOTES&symbol=MSFT,AAPL,IBM&apikey=demo"
+            ]
+          },
+          "SYMBOL_SEARCH": {
+            "function": "SYMBOL_SEARCH",
+            "description": "Búsqueda de símbolos y información de mercado basada en keywords. Útil para auto-complete",
+            "parameters": {
+              "required": {
+                "function": "SYMBOL_SEARCH",
+                "keywords": "Texto de búsqueda (ejemplo: microsoft)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=tesco&apikey=demo",
+              "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=BA&apikey=demo"
+            ]
+          },
+          "MARKET_STATUS": {
+            "function": "MARKET_STATUS",
+            "description": "Retorna el estado actual del mercado (abierto vs cerrado) de las principales plazas de trading globales",
+            "parameters": {
+              "required": {
+                "function": "MARKET_STATUS",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=demo"
+            ]
+          }
+        }
+      },
+      
+      "options_data": {
+        "name": "Options Data APIs",
+        "description": "APIs que proveen datos de opciones de EE.UU. en tiempo real e históricos, con más de 15 años de historia",
+        "endpoints": {
+          "REALTIME_OPTIONS": {
+            "function": "REALTIME_OPTIONS",
+            "description": "Retorna datos de opciones de EE.UU. en tiempo real con cobertura completa del mercado",
+            "premium": true,
+            "parameters": {
+              "required": {
+                "function": "REALTIME_OPTIONS",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "require_greeks": "false (default). true para habilitar greeks e implied volatility (IV)",
+                "contract": "ID específico del contrato de opciones de EE.UU.",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=REALTIME_OPTIONS&symbol=IBM&apikey=demo",
+              "https://www.alphavantage.co/query?function=REALTIME_OPTIONS&symbol=IBM&require_greeks=true&apikey=demo",
+              "https://www.alphavantage.co/query?function=REALTIME_OPTIONS&symbol=IBM&require_greeks=true&contract=IBM270115C00390000&apikey=demo"
+            ]
+          },
+          "HISTORICAL_OPTIONS": {
+            "function": "HISTORICAL_OPTIONS",
+            "description": "Retorna la cadena completa de opciones históricas para un símbolo en una fecha específica, cubriendo más de 15 años de historia",
+            "parameters": {
+              "required": {
+                "function": "HISTORICAL_OPTIONS",
+                "symbol": "Símbolo de la acción (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "date": "Fecha en formato YYYY-MM-DD (ejemplo: 2017-11-15). Si no se especifica, retorna la sesión de trading anterior. Acepta fechas desde 2008-01-01",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=HISTORICAL_OPTIONS&symbol=IBM&apikey=demo",
+              "https://www.alphavantage.co/query?function=HISTORICAL_OPTIONS&symbol=IBM&date=2017-11-15&apikey=demo"
+            ]
+          }
+        }
+      },
+      
+      "alpha_intelligence": {
+        "name": "Alpha Intelligence™",
+        "description": "APIs con inteligencia de mercado avanzada construida con décadas de experiencia en IA, machine learning y finanzas cuantitativas",
+        "endpoints": {
+          "NEWS_SENTIMENT": {
+            "function": "NEWS_SENTIMENT",
+            "description": "Retorna noticias de mercado en vivo e históricas con análisis de sentimiento de outlets premium alrededor del mundo",
+            "parameters": {
+              "required": {
+                "function": "NEWS_SENTIMENT",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "tickers": "Símbolos de stock/crypto/forex (ejemplo: IBM o COIN,CRYPTO:BTC,FOREX:USD)",
+                "topics": "Tópicos de noticias: blockchain, earnings, ipo, mergers_and_acquisitions, financial_markets, economy_fiscal, economy_monetary, economy_macro, energy_transportation, finance, life_sciences, manufacturing, real_estate, retail_wholesale, technology",
+                "time_from": "Rango de tiempo en formato YYYYMMDDTHHMM (ejemplo: 20220410T0130)",
+                "time_to": "Rango de tiempo en formato YYYYMMDDTHHMM",
+                "sort": "LATEST (default), EARLIEST, o RELEVANCE",
+                "limit": "50 (default), máximo 1000"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=demo",
+              "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=COIN,CRYPTO:BTC,FOREX:USD&time_from=20220410T0130&limit=1000&apikey=demo"
+            ]
+          },
+          "EARNINGS_CALL_TRANSCRIPT": {
+            "function": "EARNINGS_CALL_TRANSCRIPT",
+            "description": "Retorna la transcripción de earnings call para una compañía en un trimestre específico, cubriendo más de 15 años de historia con señales de sentimiento basadas en LLM",
+            "parameters": {
+              "required": {
+                "function": "EARNINGS_CALL_TRANSCRIPT",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "quarter": "Trimestre fiscal en formato YYYYQM (ejemplo: 2024Q1). Cualquier trimestre desde 2010Q1",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=EARNINGS_CALL_TRANSCRIPT&symbol=IBM&quarter=2024Q1&apikey=demo"
+            ]
+          },
+          "TOP_GAINERS_LOSERS": {
+            "function": "TOP_GAINERS_LOSERS",
+            "description": "Retorna los top 20 ganadores, perdedores y tickers más activamente negociados en el mercado de EE.UU.",
+            "parameters": {
+              "required": {
+                "function": "TOP_GAINERS_LOSERS",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=demo"
+            ],
+            "notes": "Se actualiza al final de cada día. Para datos en tiempo real o con 15 minutos de delay, se requiere membresía premium"
+          },
+          "INSIDER_TRANSACTIONS": {
+            "function": "INSIDER_TRANSACTIONS",
+            "description": "Retorna las últimas y históricas transacciones de insiders hechas por stakeholders clave (fundadores, ejecutivos, board members, etc.) de una compañía",
+            "parameters": {
+              "required": {
+                "function": "INSIDER_TRANSACTIONS",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=INSIDER_TRANSACTIONS&symbol=IBM&apikey=demo"
+            ]
+          },
+          "ANALYTICS_FIXED_WINDOW": {
+            "function": "ANALYTICS_FIXED_WINDOW",
+            "description": "Retorna un conjunto rico de métricas analíticas avanzadas (total return, variance, auto-correlation, etc.) para una serie temporal sobre una ventana temporal fija",
+            "parameters": {
+              "required": {
+                "function": "ANALYTICS_FIXED_WINDOW",
+                "SYMBOLS": "Lista de símbolos separados por coma. Free: hasta 5. Premium: hasta 50",
+                "RANGE": "Rango de fechas: full, {N}day, {N}week, {N}month, {N}year, {N}minute, {N}hour, o YYYY-MM-DD para fechas específicas",
+                "INTERVAL": "1min, 5min, 15min, 30min, 60min, DAILY, WEEKLY, MONTHLY",
+                "CALCULATIONS": "MIN, MAX, MEAN, MEDIAN, CUMULATIVE_RETURN, VARIANCE, STDDEV, MAX_DRAWDOWN, HISTOGRAM, AUTOCORRELATION, COVARIANCE, CORRELATION",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "OHLC": "close (default), open, high, o low"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=ANALYTICS_FIXED_WINDOW&SYMBOLS=AAPL,MSFT,IBM&RANGE=2023-07-01&RANGE=2023-08-31&INTERVAL=DAILY&OHLC=close&CALCULATIONS=MEAN,STDDEV,CORRELATION&apikey=demo"
+            ],
+            "calculations_options": {
+              "VARIANCE": "VARIANCE(annualized=True) para valor anualizado",
+              "STDDEV": "STDDEV(annualized=True) para valor anualizado",
+              "HISTOGRAM": "HISTOGRAM(bins=20) para especificar bins customizados",
+              "AUTOCORRELATION": "AUTOCORRELATION(lag=2) para especificar lag customizado",
+              "COVARIANCE": "COVARIANCE(annualized=True) para valor anualizado",
+              "CORRELATION": "CORRELATION(method=KENDALL) o CORRELATION(method=SPEARMAN)"
+            }
+          },
+          "ANALYTICS_SLIDING_WINDOW": {
+            "function": "ANALYTICS_SLIDING_WINDOW",
+            "description": "Retorna métricas analíticas avanzadas para una serie temporal sobre ventanas de tiempo deslizantes",
+            "parameters": {
+              "required": {
+                "function": "ANALYTICS_SLIDING_WINDOW",
+                "SYMBOLS": "Lista de símbolos separados por coma. Free: hasta 5. Premium: hasta 50",
+                "RANGE": "Rango de fechas: full, {N}day, {N}week, {N}month, {N}year, {N}minute, {N}hour, o fechas específicas",
+                "INTERVAL": "1min, 5min, 15min, 30min, 60min, DAILY, WEEKLY, MONTHLY",
+                "WINDOW_SIZE": "Entero representando el tamaño de la ventana móvil. Mínimo recomendado: 10",
+                "CALCULATIONS": "MEAN, MEDIAN, CUMULATIVE_RETURN, VARIANCE, STDDEV, COVARIANCE, CORRELATION. Free: 1 métrica. Premium: múltiples",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "OHLC": "close (default), open, high, o low"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=ANALYTICS_SLIDING_WINDOW&SYMBOLS=AAPL,IBM&RANGE=2month&INTERVAL=DAILY&OHLC=close&WINDOW_SIZE=20&CALCULATIONS=MEAN,STDDEV(annualized=True)&apikey=demo"
+            ]
+          }
+        }
+      },
+      
+      "fundamental_data": {
+        "name": "Fundamental Data",
+        "description": "APIs que ofrecen datos fundamentales en varias dimensiones temporales cubriendo métricas financieras clave, estados de resultados, balances, flujo de caja y otros datos fundamentales",
+        "endpoints": {
+          "OVERVIEW": {
+            "function": "OVERVIEW",
+            "description": "Retorna información de la compañía, ratios financieros y otras métricas clave para la acción especificada",
+            "parameters": {
+              "required": {
+                "function": "OVERVIEW",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=OVERVIEW&symbol=IBM&apikey=demo"
+            ],
+            "notes": "Los datos se actualizan generalmente el mismo día que una compañía reporta sus últimas ganancias y finanzas"
+          },
+          "ETF_PROFILE": {
+            "function": "ETF_PROFILE",
+            "description": "Retorna métricas clave de ETF (activos netos, expense ratio, turnover) junto con holdings/constituyentes con asignación por tipos de activos y sectores",
+            "parameters": {
+              "required": {
+                "function": "ETF_PROFILE",
+                "symbol": "Símbolo del ticker (ejemplo: QQQ)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=ETF_PROFILE&symbol=QQQ&apikey=demo"
+            ]
+          },
+          "DIVIDENDS": {
+            "function": "DIVIDENDS",
+            "description": "Retorna distribuciones de dividendos históricas y futuras (declaradas)",
+            "parameters": {
+              "required": {
+                "function": "DIVIDENDS",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=DIVIDENDS&symbol=IBM&apikey=demo"
+            ]
+          },
+          "SPLITS": {
+            "function": "SPLITS",
+            "description": "Retorna eventos históricos de splits de acciones",
+            "parameters": {
+              "required": {
+                "function": "SPLITS",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=SPLITS&symbol=IBM&apikey=demo"
+            ]
+          },
+          "INCOME_STATEMENT": {
+            "function": "INCOME_STATEMENT",
+            "description": "Retorna estados de resultados anuales y trimestrales para la compañía, con campos normalizados mapeados a taxonomías GAAP e IFRS del SEC",
+            "parameters": {
+              "required": {
+                "function": "INCOME_STATEMENT",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=IBM&apikey=demo"
+            ]
+          },
+          "BALANCE_SHEET": {
+            "function": "BALANCE_SHEET",
+            "description": "Retorna balances anuales y trimestrales para la compañía, con campos normalizados mapeados a taxonomías GAAP e IFRS del SEC",
+            "parameters": {
+              "required": {
+                "function": "BALANCE_SHEET",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=BALANCE_SHEET&symbol=IBM&apikey=demo"
+            ]
+          },
+          "CASH_FLOW": {
+            "function": "CASH_FLOW",
+            "description": "Retorna flujo de caja anual y trimestral para la compañía, con campos normalizados mapeados a taxonomías GAAP e IFRS del SEC",
+            "parameters": {
+              "required": {
+                "function": "CASH_FLOW",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=CASH_FLOW&symbol=IBM&apikey=demo"
+            ]
+          },
+          "SHARES_OUTSTANDING": {
+            "function": "SHARES_OUTSTANDING",
+            "description": "Retorna números trimestrales de acciones en circulación para la compañía, con valores de acciones diluidas y básicas",
+            "parameters": {
+              "required": {
+                "function": "SHARES_OUTSTANDING",
+                "symbol": "Símbolo del ticker (ejemplo: MSFT)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=SHARES_OUTSTANDING&symbol=MSFT&apikey=demo"
+            ]
+          },
+          "EARNINGS": {
+            "function": "EARNINGS",
+            "description": "Retorna ganancias anuales y trimestrales (EPS) para la compañía. Los datos trimestrales también incluyen estimados de analistas y métricas de sorpresa",
+            "parameters": {
+              "required": {
+                "function": "EARNINGS",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=EARNINGS&symbol=IBM&apikey=demo"
+            ]
+          },
+          "EARNINGS_ESTIMATES": {
+            "function": "EARNINGS_ESTIMATES",
+            "description": "Retorna estimados anuales y trimestrales de EPS y revenue para la compañía, junto con conteo de analistas e historial de revisiones",
+            "parameters": {
+              "required": {
+                "function": "EARNINGS_ESTIMATES",
+                "symbol": "Símbolo del ticker (ejemplo: IBM)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=EARNINGS_ESTIMATES&symbol=IBM&apikey=demo"
+            ]
+          },
+          "LISTING_STATUS": {
+            "function": "LISTING_STATUS",
+            "description": "Retorna una lista de acciones y ETFs activos o deslistados de EE.UU., ya sea del último día de trading o en un momento específico en la historia",
+            "parameters": {
+              "required": {
+                "function": "LISTING_STATUS",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "date": "Fecha en formato YYYY-MM-DD. Si no se especifica, retorna la lista del último día de trading. Soporta cualquier fecha desde 2010-01-01",
+                "state": "active (default) o delisted"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=LISTING_STATUS&apikey=demo",
+              "https://www.alphavantage.co/query?function=LISTING_STATUS&date=2014-07-10&state=delisted&apikey=demo"
+            ],
+            "notes": "Este endpoint usa formato CSV para mejor tiempo de respuesta"
+          },
+          "EARNINGS_CALENDAR": {
+            "function": "EARNINGS_CALENDAR",
+            "description": "Retorna una lista de ganancias de compañías esperadas en los próximos 3, 6 o 12 meses",
+            "parameters": {
+              "required": {
+                "function": "EARNINGS_CALENDAR",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "symbol": "Si no se especifica, retorna la lista completa de ganancias programadas. Si se especifica, retorna las ganancias esperadas para ese símbolo específico",
+                "horizon": "3month (default), 6month, o 12month"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=EARNINGS_CALENDAR&horizon=3month&apikey=demo",
+              "https://www.alphavantage.co/query?function=EARNINGS_CALENDAR&symbol=IBM&horizon=12month&apikey=demo"
+            ],
+            "notes": "Este endpoint usa formato CSV para mejor tiempo de respuesta"
+          },
+          "IPO_CALENDAR": {
+            "function": "IPO_CALENDAR",
+            "description": "Retorna una lista de IPOs esperados en los próximos 3 meses",
+            "parameters": {
+              "required": {
+                "function": "IPO_CALENDAR",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=IPO_CALENDAR&apikey=demo"
+            ],
+            "notes": "Este endpoint usa formato CSV para mejor tiempo de respuesta"
+          }
+        }
+      },
+      
+      "forex": {
+        "name": "Foreign Exchange Rates (FX)",
+        "description": "APIs que proveen un amplio rango de feeds de datos para tasas forex (FX) en tiempo real e históricas",
+        "endpoints": {
+          "CURRENCY_EXCHANGE_RATE": {
+            "function": "CURRENCY_EXCHANGE_RATE",
+            "description": "Retorna la tasa de cambio en tiempo real para un par de criptomoneda/moneda física",
+            "parameters": {
+              "required": {
+                "function": "CURRENCY_EXCHANGE_RATE",
+                "from_currency": "Moneda origen (ejemplo: USD o BTC)",
+                "to_currency": "Moneda destino (ejemplo: JPY o EUR)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=demo",
+              "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=EUR&apikey=demo"
+            ]
+          },
+          "FX_INTRADAY": {
+            "function": "FX_INTRADAY",
+            "description": "Retorna series temporales intradiarias (timestamp, open, high, low, close) del par de divisas especificado, actualizado en tiempo real",
+            "premium": true,
+            "parameters": {
+              "required": {
+                "function": "FX_INTRADAY",
+                "from_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: EUR)",
+                "to_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: USD)",
+                "interval": "1min, 5min, 15min, 30min, 60min",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "outputsize": "compact (default, últimos 100 puntos) o full (serie temporal completa)",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=FX_INTRADAY&from_symbol=EUR&to_symbol=USD&interval=5min&apikey=demo"
+            ]
+          },
+          "FX_DAILY": {
+            "function": "FX_DAILY",
+            "description": "Retorna series temporales diarias del par de divisas especificado, actualizado en tiempo real",
+            "parameters": {
+              "required": {
+                "function": "FX_DAILY",
+                "from_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: EUR)",
+                "to_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: USD)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "outputsize": "compact (default, últimos 100 puntos) o full (serie temporal completa)",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo"
+            ]
+          },
+          "FX_WEEKLY": {
+            "function": "FX_WEEKLY",
+            "description": "Retorna series temporales semanales del par de divisas especificado, actualizado en tiempo real",
+            "parameters": {
+              "required": {
+                "function": "FX_WEEKLY",
+                "from_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: EUR)",
+                "to_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: USD)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=EUR&to_symbol=USD&apikey=demo"
+            ]
+          },
+          "FX_MONTHLY": {
+            "function": "FX_MONTHLY",
+            "description": "Retorna series temporales mensuales del par de divisas especificado, actualizado en tiempo real",
+            "parameters": {
+              "required": {
+                "function": "FX_MONTHLY",
+                "from_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: EUR)",
+                "to_symbol": "Símbolo de 3 letras de la lista de divisas forex (ejemplo: USD)",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=FX_MONTHLY&from_symbol=EUR&to_symbol=USD&apikey=demo"
+            ]
+          }
+        }
+      },
+      
+      "crypto": {
+        "name": "Digital & Crypto Currencies",
+        "description": "APIs que proveen un amplio rango de feeds de datos para monedas digitales y criptomonedas como Bitcoin",
+        "endpoints": {
+          "CRYPTO_INTRADAY": {
+            "function": "CRYPTO_INTRADAY",
+            "description": "Retorna series temporales intradiarias (timestamp, open, high, low, close, volume) de la criptomoneda especificada, actualizado en tiempo real",
+            "premium": true,
+            "parameters": {
+              "required": {
+                "function": "CRYPTO_INTRADAY",
+                "symbol": "Criptomoneda de la lista (ejemplo: ETH)",
+                "market": "Mercado de intercambio de la lista (ejemplo: USD)",
+                "interval": "1min, 5min, 15min, 30min, 60min",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "outputsize": "compact (default, últimos 100 puntos) o full (serie temporal completa)",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol=ETH&market=USD&interval=5min&apikey=demo"
+            ]
+          },
+          "DIGITAL_CURRENCY_DAILY": {
+            "function": "DIGITAL_CURRENCY_DAILY",
+            "description": "Retorna series temporales históricas diarias para una criptomoneda (ej., BTC) negociada en un mercado específico (ej., EUR/Euro), actualizado diariamente a medianoche (UTC)",
+            "parameters": {
+              "required": {
+                "function": "DIGITAL_CURRENCY_DAILY",
+                "symbol": "Criptomoneda de la lista (ejemplo: BTC)",
+                "market": "Mercado de intercambio de la lista (ejemplo: EUR)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=BTC&market=EUR&apikey=demo"
+            ],
+            "notes": "Precios y volúmenes se cotizan tanto en la moneda específica del mercado como en USD"
+          },
+          "DIGITAL_CURRENCY_WEEKLY": {
+            "function": "DIGITAL_CURRENCY_WEEKLY",
+            "description": "Retorna series temporales históricas semanales para una criptomoneda negociada en un mercado específico, actualizado diariamente a medianoche (UTC)",
+            "parameters": {
+              "required": {
+                "function": "DIGITAL_CURRENCY_WEEKLY",
+                "symbol": "Criptomoneda de la lista (ejemplo: BTC)",
+                "market": "Mercado de intercambio de la lista (ejemplo: EUR)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&symbol=BTC&market=EUR&apikey=demo"
+            ]
+          },
+          "DIGITAL_CURRENCY_MONTHLY": {
+            "function": "DIGITAL_CURRENCY_MONTHLY",
+            "description": "Retorna series temporales históricas mensuales para una criptomoneda negociada en un mercado específico, actualizado diariamente a medianoche (UTC)",
+            "parameters": {
+              "required": {
+                "function": "DIGITAL_CURRENCY_MONTHLY",
+                "symbol": "Criptomoneda de la lista (ejemplo: BTC)",
+                "market": "Mercado de intercambio de la lista (ejemplo: EUR)",
+                "apikey": "Tu API key"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_MONTHLY&symbol=BTC&market=EUR&apikey=demo"
+            ]
+          }
+        }
+      },
+      
+      "commodities": {
+        "name": "Commodities",
+        "description": "APIs que proveen datos históricos para commodities principales como petróleo crudo, gas natural, cobre, trigo, etc., a través de varios horizontes temporales",
+        "endpoints": {
+          "WTI": {
+            "function": "WTI",
+            "description": "Retorna precios de petróleo crudo West Texas Intermediate (WTI) en horizontes diarios, semanales y mensuales",
+            "parameters": {
+              "required": {
+                "function": "WTI",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), daily, weekly",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=WTI&interval=monthly&apikey=demo"
+            ],
+            "source": "U.S. Energy Information Administration, vía FRED"
+          },
+          "BRENT": {
+            "function": "BRENT",
+            "description": "Retorna precios de petróleo crudo Brent (Europa) en horizontes diarios, semanales y mensuales",
+            "parameters": {
+              "required": {
+                "function": "BRENT",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), daily, weekly",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=BRENT&interval=monthly&apikey=demo"
+            ],
+            "source": "U.S. Energy Information Administration, vía FRED"
+          },
+          "NATURAL_GAS": {
+            "function": "NATURAL_GAS",
+            "description": "Retorna precios spot de gas natural Henry Hub en horizontes diarios, semanales y mensuales",
+            "parameters": {
+              "required": {
+                "function": "NATURAL_GAS",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), daily, weekly",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=NATURAL_GAS&interval=monthly&apikey=demo"
+            ],
+            "source": "U.S. Energy Information Administration, vía FRED"
+          },
+          "COPPER": {
+            "function": "COPPER",
+            "description": "Retorna precio global de cobre en horizontes mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "COPPER",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=COPPER&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          },
+          "ALUMINUM": {
+            "function": "ALUMINUM",
+            "description": "Retorna precio global de aluminio en horizontes mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "ALUMINUM",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=ALUMINUM&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          },
+          "WHEAT": {
+            "function": "WHEAT",
+            "description": "Retorna precio global de trigo en horizontes mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "WHEAT",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=WHEAT&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          },
+          "CORN": {
+            "function": "CORN",
+            "description": "Retorna precio global de maíz en horizontes mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "CORN",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=CORN&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          },
+          "COTTON": {
+            "function": "COTTON",
+            "description": "Retorna precio global de algodón en horizontes mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "COTTON",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=COTTON&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          },
+          "SUGAR": {
+            "function": "SUGAR",
+            "description": "Retorna precio global de azúcar en horizontes mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "SUGAR",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=SUGAR&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          },
+          "COFFEE": {
+            "function": "COFFEE",
+            "description": "Retorna precio global de café en horizontes mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "COFFEE",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=COFFEE&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          },
+          "ALL_COMMODITIES": {
+            "function": "ALL_COMMODITIES",
+            "description": "Retorna índice de precio global de todos los commodities en dimensiones temporales mensuales, trimestrales y anuales",
+            "parameters": {
+              "required": {
+                "function": "ALL_COMMODITIES",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), quarterly, annual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=ALL_COMMODITIES&interval=monthly&apikey=demo"
+            ],
+            "source": "International Monetary Fund (IMF), vía FRED"
+          }
+        }
+      },
+      
+      "economic_indicators": {
+        "name": "Economic Indicators",
+        "description": "APIs que proveen indicadores económicos clave de EE.UU. frecuentemente usados para formulación de estrategias de inversión y desarrollo de aplicaciones",
+        "endpoints": {
+          "REAL_GDP": {
+            "function": "REAL_GDP",
+            "description": "Retorna el PIB Real anual y trimestral de los Estados Unidos",
+            "parameters": {
+              "required": {
+                "function": "REAL_GDP",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "annual (default) o quarterly",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=REAL_GDP&interval=annual&apikey=demo"
+            ],
+            "source": "U.S. Bureau of Economic Analysis, vía FRED"
+          },
+          "REAL_GDP_PER_CAPITA": {
+            "function": "REAL_GDP_PER_CAPITA",
+            "description": "Retorna datos trimestrales del PIB Real per cápita de los Estados Unidos",
+            "parameters": {
+              "required": {
+                "function": "REAL_GDP_PER_CAPITA",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=REAL_GDP_PER_CAPITA&apikey=demo"
+            ],
+            "source": "U.S. Bureau of Economic Analysis, vía FRED"
+          },
+          "TREASURY_YIELD": {
+            "function": "TREASURY_YIELD",
+            "description": "Retorna el rendimiento diario, semanal y mensual de los bonos del tesoro de EE.UU. para una madurez dada (ej., 5 años, 30 años, etc.)",
+            "parameters": {
+              "required": {
+                "function": "TREASURY_YIELD",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), daily, weekly",
+                "maturity": "10year (default), 3month, 2year, 5year, 7year, 30year",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=monthly&maturity=10year&apikey=demo"
+            ],
+            "source": "Board of Governors of the Federal Reserve System (US), vía FRED"
+          },
+          "FEDERAL_FUNDS_RATE": {
+            "function": "FEDERAL_FUNDS_RATE",
+            "description": "Retorna la tasa de fondos federales (tasa de interés) diaria, semanal y mensual de los Estados Unidos",
+            "parameters": {
+              "required": {
+                "function": "FEDERAL_FUNDS_RATE",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default), daily, weekly",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=FEDERAL_FUNDS_RATE&interval=monthly&apikey=demo"
+            ],
+            "source": "Board of Governors of the Federal Reserve System (US), vía FRED"
+          },
+          "CPI": {
+            "function": "CPI",
+            "description": "Retorna el índice de precios al consumidor (CPI) mensual y semestral de los Estados Unidos. El CPI es ampliamente considerado como el barómetro de los niveles de inflación en la economía",
+            "parameters": {
+              "required": {
+                "function": "CPI",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "interval": "monthly (default) o semiannual",
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=CPI&interval=monthly&apikey=demo"
+            ],
+            "source": "U.S. Bureau of Labor Statistics, vía FRED"
+          },
+          "INFLATION": {
+            "function": "INFLATION",
+            "description": "Retorna las tasas de inflación anual (precios al consumidor) de los Estados Unidos",
+            "parameters": {
+              "required": {
+                "function": "INFLATION",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=INFLATION&apikey=demo"
+            ],
+            "source": "World Bank, vía FRED"
+          },
+          "RETAIL_SALES": {
+            "function": "RETAIL_SALES",
+            "description": "Retorna datos mensuales de Advance Retail Sales: Retail Trade de los Estados Unidos",
+            "parameters": {
+              "required": {
+                "function": "RETAIL_SALES",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=RETAIL_SALES&apikey=demo"
+            ],
+            "source": "U.S. Census Bureau, vía FRED"
+          },
+          "DURABLES": {
+            "function": "DURABLES",
+            "description": "Retorna las nuevas órdenes mensuales de los fabricantes de bienes duraderos en los Estados Unidos",
+            "parameters": {
+              "required": {
+                "function": "DURABLES",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=DURABLES&apikey=demo"
+            ],
+            "source": "U.S. Census Bureau, vía FRED"
+          },
+          "UNEMPLOYMENT": {
+            "function": "UNEMPLOYMENT",
+            "description": "Retorna los datos mensuales de desempleo de los Estados Unidos. La tasa de desempleo representa el número de desempleados como porcentaje de la fuerza laboral",
+            "parameters": {
+              "required": {
+                "function": "UNEMPLOYMENT",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=UNEMPLOYMENT&apikey=demo"
+            ],
+            "source": "U.S. Bureau of Labor Statistics, vía FRED"
+          },
+          "NONFARM_PAYROLL": {
+            "function": "NONFARM_PAYROLL",
+            "description": "Retorna el Total Nonfarm Payroll mensual de EE.UU., una medida del número de trabajadores estadounidenses en la economía que excluye propietarios, empleados domésticos privados, voluntarios no remunerados, empleados agrícolas y trabajadores autónomos no incorporados",
+            "parameters": {
+              "required": {
+                "function": "NONFARM_PAYROLL",
+                "apikey": "Tu API key"
+              },
+              "optional": {
+                "datatype": "json (default) o csv"
+              }
+            },
+            "example_urls": [
+              "https://www.alphavantage.co/query?function=NONFARM_PAYROLL&apikey=demo"
+            ],
+            "source": "U.S. Bureau of Labor Statistics, vía FRED"
+          }
+        }
+      }
+    },
+    
+    "notes": {
+      "general": [
+        "Todos los endpoints requieren un API key. Puedes obtener una gratis en https://www.alphavantage.co/support/#api-key",
+        "Los ejemplos usan 'demo' como apikey, pero debes reemplazarlo con tu propia key",
+        "La mayoría de endpoints soportan tanto formato JSON como CSV",
+        "Soporta más de 100,000 símbolos globales de acciones, ETFs y fondos mutuos"
+      ],
+      "premium_features": [
+        "Algunos endpoints están marcados como 'premium' y requieren una membresía de pago",
+        "Las funciones premium incluyen: datos en tiempo real, datos intradiarios, opciones en tiempo real, etc.",
+        "Los datos en tiempo real y con delay de 15 minutos del mercado de EE.UU. están regulados por las bolsas, FINRA y la SEC"
+      ],
+      "data_sources": [
+        "Muchos indicadores económicos y de commodities usan la FRED API",
+        "Los datos fundamentales se mapean a taxonomías GAAP e IFRS del SEC",
+        "Los datos se actualizan generalmente el mismo día que las compañías reportan sus ganancias"
+      ],
+      "rate_limits": [
+        "Las API keys gratuitas tienen límites de tasa de solicitudes",
+        "Para mayor throughput, considera planes premium con 600 o 1200 requests por minuto"
+      ]
+    }
+  }

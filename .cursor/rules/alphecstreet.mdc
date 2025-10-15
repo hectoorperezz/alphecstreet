@@ -1,0 +1,276 @@
+---
+description: Quantitative hedge fund trading system with multi-strategy execution, backtesting, and risk management
+globs:
+alwaysApply: true
+---
+
+
+# Quantitative Hedge Fund Repository - Cursor Rules
+
+## Project Overview
+This repository contains the complete infrastructure for a quantitative hedge fund operating systematic trading strategies across multiple asset classes. The system handles strategy research, backtesting, live execution, risk management, and monitoring. The name of the hedge fund is Alphec Street.
+
+
+## Broker Configuration
+
+### Interactive Brokers Integration
+All fund operations are executed exclusively through Interactive Brokers (IB).
+
+#### Account Structure
+- **Paper Trading Account**: Used for strategy testing, staging environment, and validation
+  - Full market data access
+  - Simulated order execution
+  - No real capital at risk
+  - Must run for minimum 2 weeks before promoting strategy to production
+  
+- **Live Trading Account**: Production account with real capital
+  - Real-time order execution
+  - Actual fills and slippage
+  - Transaction costs applied
+  - Requires all risk checks to pass
+
+
+### Repository Structure
+```
+quant-fund/
+├── strategies/          # Strategy implementations
+├── backtesting/         # Backtesting engine and utilities
+├── execution/           # Live trading and order management
+├── data/               # Data pipelines and storage
+├── risk/               # Risk management and position sizing
+├── monitoring/         # Dashboards and alerting
+├── research/           # Jupyter notebooks and experiments
+├── infrastructure/     # Deployment and DevOps
+└── tests/              # Comprehensive test suite
+```
+
+## Coding Standards
+
+### Python Style
+- **Python Version**: 3.11+ (use modern type hints)
+- **Style Guide**: Follow PEP 8, enforce with Black (line length: 100)
+- **Type Hints**: Mandatory for all functions, use `typing` module extensively
+- **Docstrings**: Google style, include Args, Returns, Raises, Examples
+- **Imports**: Absolute imports, organized (stdlib, third-party, local)
+
+### Financial Code Specifics
+- **No floats for money**: Use `Decimal` for prices and PnL calculations
+- **Timezone awareness**: All timestamps in UTC, use `pandas.Timestamp` with tz
+- **Market hours**: Explicitly handle market open/close, holidays
+- **Corporate actions**: Code must handle splits, dividends, delistings
+- **Precision**: Document rounding behavior, avoid accumulated rounding errors
+
+### Example Function Template
+```python
+from decimal import Decimal
+from typing import Optional
+import pandas as pd
+
+def calculate_position_size(
+    capital: Decimal,
+    signal_strength: float,
+    volatility: float,
+    max_position_pct: float = 0.1,
+    kelly_fraction: float = 0.25
+) -> Decimal:
+    """
+    Calculate position size using Kelly Criterion with volatility adjustment.
+    
+    Args:
+        capital: Total available capital in account currency
+        signal_strength: Expected return [-1, 1], where 1 is max confidence
+        volatility: Annualized volatility of the asset [0, inf)
+        max_position_pct: Maximum position as fraction of capital
+        kelly_fraction: Fraction of Kelly to use for safety (default: 0.25)
+    
+    Returns:
+        Position size in account currency (Decimal for precision)
+    
+    Raises:
+        ValueError: If signal_strength outside [-1, 1] or negative values
+    
+    Examples:
+        >>> calculate_position_size(Decimal('100000'), 0.5, 0.20)
+        Decimal('12500.00')
+    """
+    if not -1 <= signal_strength <= 1:
+        raise ValueError(f"Signal strength {signal_strength} outside [-1, 1]")
+    
+    # Implementation
+    pass
+```
+
+## Strategy Development Guidelines
+
+### Strategy Class Structure
+Every strategy must inherit from `BaseStrategy` and implement:
+- `generate_signals()`: Return signal DataFrame with weights [-1, 1]
+- `get_universe()`: Return list of tradeable instruments
+- `validate_parameters()`: Ensure parameters are valid before run
+- `calculate_risk_metrics()`: Return expected volatility, VaR, etc.
+
+### Backtesting Requirements
+- **Walk-forward validation**: No look-ahead bias ever
+- **Transaction costs**: Include realistic slippage and commissions
+- **Market impact**: Model for positions > 1% ADV
+- **Survivorship bias**: Use point-in-time universes only
+- **Data quality**: Check for outliers, missing data, corporate actions
+- **Multiple regimes**: Test across bull, bear, high vol, low vol periods
+
+### Performance Metrics
+Every strategy must report:
+- Total Return, CAGR, Sharpe Ratio, Sortino Ratio
+- Max Drawdown, Calmar Ratio, Win Rate
+- Turnover, Average Holding Period
+- Factor exposures (market beta, size, value, momentum)
+- Correlation to other strategies in portfolio
+
+
+## Data Management
+
+### Data Sources
+- **Primary broker**: Interactive Brokers (real-time and historical)
+- **Backup sources**: Polygon.io, Alpha Vantage
+- **Storage**: PostgreSQL for reference
+
+
+
+
+## Security and Compliance
+
+### API Keys and Secrets
+- **Never** commit API keys to repository
+- Use environment variables or secret manager (AWS Secrets Manager)
+- Rotate keys quarterly
+- Use read-only keys for research, write keys only in production
+
+### Audit Trail
+Every action must be logged:
+- Strategy signal generation (timestamp, symbol, signal value)
+- Risk check (passed/failed, reason)
+- Order submission (all parameters)
+- Execution result (fill price, quantity, timestamp)
+- Manual interventions (who, what, why)
+
+### Compliance
+- Document all strategies in plain English
+- Maintain model documentation (assumptions, limitations)
+- Record all parameter changes with justification
+- Keep audit trail for 7 years minimum
+
+## Performance Optimization
+
+### When to Optimize
+1. First make it correct
+2. Then make it testable
+3. Profile to find bottlenecks
+4. Only then optimize hotspots
+
+### Python Performance
+- Use NumPy/Pandas vectorization over loops
+- Consider Numba for numerical hotspots
+- Use multiprocessing for embarrassingly parallel tasks
+- Profile with `cProfile` and `line_profiler`
+
+### Database Optimization
+- Index on timestamp and symbol columns
+- Use partitioning for large tables
+- Batch inserts instead of row-by-row
+- Use connection pooling
+
+## AI Assistant Guidelines (for Cursor)
+
+### When Writing Code
+1. **Ask clarifying questions** if strategy logic is ambiguous
+2. **Include comprehensive docstrings** with examples
+3. **Add type hints** to all function signatures
+4. **Write tests alongside code** (TDD approach)
+5. **Consider edge cases**: missing data, extreme values, market holidays
+6. **Use Decimal for money**, never float
+7. **Make timestamps explicit**, always specify timezone
+
+### When Reviewing Code
+Look for:
+- Look-ahead bias in strategy logic
+- Missing error handling
+- Inadequate logging
+- Magic numbers (use named constants)
+- Insufficient testing of edge cases
+- Missing risk checks in execution path
+
+### When Explaining Code
+- Use financial terminology correctly
+- Explain the "why" not just the "what"
+- Include references to academic papers if applicable
+- Warn about common pitfalls (overfitting, curve-fitting, etc.)
+
+### Common Financial Pitfalls to Avoid
+- **Survivorship bias**: Only using stocks that still exist today
+- **Look-ahead bias**: Using future information in past decisions
+- **Data snooping**: Testing too many parameters, overfitting to noise
+- **Transaction costs**: Ignoring realistic costs makes strategies unworkable
+- **Regime dependency**: Strategy works in backtests but fails in different market
+- **Correlation breakdown**: Hedges that fail when you need them most
+
+## Git Workflow
+
+### Branch Strategy
+- `main`: Production code, always deployable
+- `develop`: Integration branch for features
+- `feature/*`: Individual features
+- `hotfix/*`: Emergency fixes to production
+
+### Commit Messages
+```
+type(scope): brief description
+
+Detailed explanation of what and why
+
+Closes #123
+```
+
+Types: `feat`, `fix`, `refactor`, `test`, `docs`, `perf`
+
+### Code Review Requirements
+All PRs must have:
+- Passing tests (100% of test suite)
+- Code coverage maintained or improved
+- Documentation updated
+- At least one approval from team member
+- No merge conflicts
+
+## Deployment
+
+### Environments
+- **research**: Jupyter notebooks, experimental code
+- **staging**: Full production setup with paper trading
+- **production**: Live trading with real capital
+
+### Deployment Checklist
+- [ ] All tests passing
+- [ ] Backtest results reviewed
+- [ ] Risk parameters validated
+- [ ] Monitoring dashboards updated
+- [ ] Rollback plan documented
+- [ ] Team notified of deployment
+- [ ] Paper trading successful for 2 weeks minimum
+
+### Rollback Procedure
+If something goes wrong:
+1. Stop all order submission immediately
+2. Cancel all open orders
+3. Flatten positions if necessary (market orders)
+4. Revert to last known good version
+5. Investigate root cause before redeployment
+
+## Documentation Requirements
+
+### Strategy Documentation
+Each strategy needs:
+- **Overview**: What is the strategy trying to exploit?
+- **Academic basis**: Papers or research supporting the approach
+- **Implementation**: How signals are generated
+- **Parameters**: What can be tuned and expected ranges
+- **Risks**: What could cause the strategy to fail
+- **Performance**: Historical backtest results with out-of-sample
+

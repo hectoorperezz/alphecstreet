@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: alphecstreet_timescaledb
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: alphecstreet
+      POSTGRES_USER: alphecstreet_user
+      POSTGRES_PASSWORD: alphecstreet_dev_2024
+    volumes:
+      - ../../data/postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alphecstreet_user -d alphecstreet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - alphecstreet_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: alphecstreet_pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: soporte@alpheclabs.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ../../data/pgadmin_data:/var/lib/pgadmin
+    networks:
+      - alphecstreet_network
+    depends_on:
+      - timescaledb
+
+networks:
+  alphecstreet_network:
+    driver: bridge
+
