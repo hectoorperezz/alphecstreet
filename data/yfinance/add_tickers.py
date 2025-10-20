@@ -202,26 +202,47 @@ def interactive_mode(config: Optional[DatabaseConfig] = None):
     print("="*70)
     print("Add any ticker(s) to your database. Enter one or more symbols.")
     print("Examples: AAPL, MSFT GOOGL TSLA, BRK.B")
+    print("Press Ctrl+C at any time to cancel.")
     print("="*70 + "\n")
     
-    # Get tickers
-    ticker_input = input("Enter ticker symbol(s) (space-separated): ").strip()
-    if not ticker_input:
-        print("❌ No tickers provided. Exiting.")
-        return
+    # Get tickers with retry loop
+    while True:
+        ticker_input = input("Enter ticker symbol(s) (space-separated): ").strip()
+        if ticker_input:
+            break
+        print("⚠️  Please enter at least one ticker, or press Ctrl+C to cancel.\n")
     
     tickers = [t.upper().strip() for t in ticker_input.replace(',', ' ').split()]
     
-    # Get date range
-    start_date = input("Start date (YYYY-MM-DD) [default: 2015-01-01]: ").strip()
-    if not start_date:
-        start_date = "2015-01-01"
+    # Get date range with validation
+    while True:
+        start_date = input("\nStart date (YYYY-MM-DD) [default: 2015-01-01]: ").strip()
+        if not start_date:
+            start_date = "2015-01-01"
+            break
+        
+        # Validate format
+        try:
+            datetime.strptime(start_date, '%Y-%m-%d')
+            break
+        except ValueError:
+            print("⚠️  Invalid date format. Please use YYYY-MM-DD or leave blank for default.\n")
     
-    end_date = input("End date (YYYY-MM-DD) [default: today]: ").strip()
-    if not end_date:
-        end_date = None
+    while True:
+        end_date = input("End date (YYYY-MM-DD) [default: today]: ").strip()
+        if not end_date:
+            end_date = None
+            break
+        
+        # Validate format
+        try:
+            datetime.strptime(end_date, '%Y-%m-%d')
+            break
+        except ValueError:
+            print("⚠️  Invalid date format. Please use YYYY-MM-DD or leave blank for today.\n")
     
     # Download
+    print()
     add_tickers(
         tickers=tickers,
         start_date=start_date,

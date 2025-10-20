@@ -9,11 +9,25 @@ import time
 import requests
 from typing import Optional, Dict, Any
 from datetime import datetime
+from pathlib import Path
+from dotenv import load_dotenv
 
+# Load environment variables from .env.local in project root
+# Get the project root (4 levels up from this file)
+_current_file = Path(__file__)
+_project_root = _current_file.parent.parent.parent.parent
+_env_file = _project_root / '.env.local'
+
+# Load .env.local if it exists
+if _env_file.exists():
+    load_dotenv(_env_file)
+else:
+    # Fallback: try loading from current directory
+    load_dotenv('.env.local')
 
 # API Configuration
 BASE_URL = 'https://www.alphavantage.co/query'
-RATE_LIMIT_DELAY = 15  # seconds between requests (5 calls/min = 12s, we use 15 for safety)
+RATE_LIMIT_DELAY = 2  # seconds between requests (5 calls/min = 12s, we use 15 for safety)
 
 # Rate limiting state
 _last_api_call = None

@@ -45,10 +45,17 @@ source data/alphavantage/load_env.sh
 
 ### 2. Download Data
 
-**Equities Intraday (Interactive Mode)**
+**Equities Intraday (Interactive Mode)** - RECOMMENDED ✨
 ```bash
 python -m data.alphavantage.equities.intraday
-# Prompts for: symbol, interval, adjusted, extended_hours, month
+# Prompts for:
+#   - Symbol(s)
+#   - Interval (1min, 5min, 15min, 30min, 60min)
+#   - Adjusted/Extended hours
+#   - Download mode:
+#     1. Recent data (last 30 days)
+#     2. Single month (YYYY-MM)
+#     3. Date range (automatically downloads month-by-month)
 ```
 
 **Options Historical (Interactive Mode)**
@@ -64,6 +71,12 @@ python -m data.alphavantage.equities.intraday --symbol SPY --interval 1min
 
 # Intraday - specific historical month
 python -m data.alphavantage.equities.intraday --symbol AAPL --interval 5min --month 2020-01
+
+# Intraday - date range (2010 to 2025) - NEW! 🚀
+python -m data.alphavantage.equities.intraday --symbol SPY --start-date 2010-01 --end-date 2025-10 --interval 1min
+
+# Intraday - multiple symbols over date range
+python -m data.alphavantage.equities.intraday --symbols SPY QQQ IWM --start-date 2024-01 --end-date 2024-12 --interval 5min
 
 # Options - latest chain
 python -m data.alphavantage.options.historical --symbol AAPL
@@ -106,23 +119,33 @@ python -m data.alphavantage.options.historical --symbol SPY --date 2025-10-15
    - Only fetches new bars
    - Prevents duplicate data
 
-3. **Interactive Mode**
+3. **Date Range Downloads** 🆕
+   - Download years of historical data automatically
+   - Month-by-month batch processing
+   - Progress tracking and error reporting
+   - Example: `--start-date 2010-01 --end-date 2025-10` downloads 180+ months
+   - Estimates API calls and time before starting
+   - Works for single or multiple symbols
+
+4. **Interactive Mode**
    - User-friendly prompts
    - No need to remember command-line flags
    - Input validation
+   - Three download modes: Recent, Single Month, Date Range
 
-4. **TimescaleDB Integration**
+5. **TimescaleDB Integration**
    - Hypertables with automatic partitioning
    - Compression after 7-30 days
    - Optimized indexes
    - Fast queries
 
-5. **Error Handling**
+6. **Error Handling**
    - API errors caught and reported
    - Network timeout protection
    - Data validation
+   - Continues on error (doesn't stop entire batch)
 
-6. **Database Views & Functions**
+7. **Database Views & Functions**
    - Latest prices
    - Data coverage summaries
    - Option chain queries
@@ -137,6 +160,14 @@ python -m data.alphavantage.options.historical --symbol SPY --date 2025-10-15
 **Our Protection:**
 - 15-second delays between calls
 - Automatic rate limiting
+
+**📘 Planning Large Downloads?**
+
+See the [Date Range Download Guide](docs/DATE_RANGE_GUIDE.md) for:
+- API call calculations
+- Time estimates
+- Multi-day download strategies
+- Best practices for building large historical databases
 - Clear error messages if limit exceeded
 
 **Tips:**

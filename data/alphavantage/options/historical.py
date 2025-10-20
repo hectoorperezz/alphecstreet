@@ -289,29 +289,38 @@ def download_interactive():
     print("  • Greeks: delta, gamma, theta, vega, rho")
     print("  • Implied Volatility (IV)")
     print("  • Volume & Open Interest")
-    print()
+    print("\nPress Ctrl+C at any time to cancel.\n")
     
-    # Get symbol(s)
-    symbol_input = input("Enter stock symbol(s) (comma-separated, e.g., AAPL, SPY): ").strip()
-    if not symbol_input:
-        print("❌ Symbol is required")
-        sys.exit(1)
+    # Get symbol(s) with retry loop
+    while True:
+        symbol_input = input("Enter stock symbol(s) (comma-separated, e.g., AAPL, SPY): ").strip()
+        if symbol_input:
+            break
+        print("⚠️  Please enter at least one symbol, or press Ctrl+C to cancel.\n")
     
     symbols = [s.strip().upper() for s in symbol_input.replace(',', ' ').split()]
     
-    # Get date (optional)
+    # Get date (optional) with validation
     print("\nDate (optional):")
     print("  Leave blank for most recent trading session")
     print("  Or enter specific date YYYY-MM-DD (available from 2008-01-01)")
-    date = input("Date [optional]: ").strip() or None
     
-    # Validate date format if provided
-    if date:
+    date = None
+    while True:
+        date_input = input("Date [optional]: ").strip()
+        
+        if not date_input:
+            # User pressed Enter - use latest
+            date = None
+            break
+        
+        # Validate date format
         try:
-            datetime.strptime(date, '%Y-%m-%d')
+            datetime.strptime(date_input, '%Y-%m-%d')
+            date = date_input
+            break
         except ValueError:
-            print("❌ Invalid date format. Use YYYY-MM-DD")
-            sys.exit(1)
+            print("⚠️  Invalid date format. Please use YYYY-MM-DD or leave blank.\n")
     
     # Download
     print()
