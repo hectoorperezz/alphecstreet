@@ -96,83 +96,131 @@ def insert_options_data(
     """
     Insert historical options data into database.
     
-    Args:
-        df: DataFrame from fetch_historical_options()
-        config: Database configuration
-    
-    Returns:
-        Tuple of (inserted_count, updated_count)
+    FIXED: Uses individual transactions to avoid "transaction aborted" error.
     """
-    if df.empty:
-        return 0, 0
+    if config is None:
+        config = DatabaseConfig.from_env()
     
     inserted = 0
     updated = 0
+    skipped = 0
+    errors = []
     
     with get_db_connection(config) as conn:
-        with conn.cursor() as cursor:
-            for _, row in df.iterrows():
-                # Convert values safely
-                try:
-                    cursor.execute("""
-                        INSERT INTO options_data_historical 
-                            (date, contract_id, symbol, expiration, strike, type,
-                             last, mark, bid, bid_size, ask, ask_size,
-                             volume, open_interest,
-                             implied_volatility, delta, gamma, theta, vega, rho,
-                             data_source)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                                %s, %s, %s, %s, %s, %s, %s, %s, 'alphavantage')
-                        ON CONFLICT (date, contract_id)
-                        DO UPDATE SET
-                            last = EXCLUDED.last,
-                            mark = EXCLUDED.mark,
-                            bid = EXCLUDED.bid,
-                            bid_size = EXCLUDED.bid_size,
-                            ask = EXCLUDED.ask,
-                            ask_size = EXCLUDED.ask_size,
-                            volume = EXCLUDED.volume,
-                            open_interest = EXCLUDED.open_interest,
-                            implied_volatility = EXCLUDED.implied_volatility,
-                            delta = EXCLUDED.delta,
-                            gamma = EXCLUDED.gamma,
-                            theta = EXCLUDED.theta,
-                            vega = EXCLUDED.vega,
-                            rho = EXCLUDED.rho,
-                            updated_at = NOW()
-                        RETURNING (xmax = 0) AS inserted
-                    """, (
-                        row.get('date'),
-                        row.get('contractID'),
-                        row.get('symbol'),
-                        row.get('expiration'),
-                        float(row['strike']) if row.get('strike') else None,
-                        row.get('type'),
-                        float(row['last']) if row.get('last') and row['last'] != '' else None,
-                        float(row['mark']) if row.get('mark') and row['mark'] != '' else None,
-                        float(row['bid']) if row.get('bid') and row['bid'] != '' else None,
-                        int(row['bid_size']) if row.get('bid_size') and row['bid_size'] != '' else None,
-                        float(row['ask']) if row.get('ask') and row['ask'] != '' else None,
-                        int(row['ask_size']) if row.get('ask_size') and row['ask_size'] != '' else None,
-                        int(row['volume']) if row.get('volume') and row['volume'] != '' else None,
-                        int(row['open_interest']) if row.get('open_interest') and row['open_interest'] != '' else None,
-                        float(row['implied_volatility']) if row.get('implied_volatility') and row['implied_volatility'] != '' else None,
-                        float(row['delta']) if row.get('delta') and row['delta'] != '' else None,
-                        float(row['gamma']) if row.get('gamma') and row['gamma'] != '' else None,
-                        float(row['theta']) if row.get('theta') and row['theta'] != '' else None,
-                        float(row['vega']) if row.get('vega') and row['vega'] != '' else None,
-                        float(row['rho']) if row.get('rho') and row['rho'] != '' else None,
-                    ))
+        for idx, row in df.iterrows():
+            try:
+                # START NEW TRANSACTION FOR EACH ROW
+                with conn.cursor() as cursor:
+                    # Check if contract already exists
+                    cursor.execute(
+                        "SELECT 1 FROM options_data_historical WHERE contractid = %s AND date = %s",
+                        (row['contractID'], row.get('date'))
+                    )
                     
-                    result = cursor.fetchone()
-                    if result and result[0]:
-                        inserted += 1
-                    else:
+                    if cursor.fetchone():
+                        # Update existing
+                        cursor.execute("""
+                            UPDATE options_data_historical
+                            SET 
+                                symbol = %s,
+                                expiration = %s,
+                                strike = %s,
+                                type = %s,
+                                last = %s,
+                                mark = %s,
+                                bid = %s,
+                                bid_size = %s,
+                                ask = %s,
+                                ask_size = %s,
+                                volume = %s,
+                                open_interest = %s,
+                                date = %s,
+                                implied_volatility = %s,
+                                delta = %s,
+                                gamma = %s,
+                                theta = %s,
+                                vega = %s,
+                                rho = %s
+                            WHERE contractid = %s AND date = %s
+                        """, (
+                            row['symbol'],
+                            row['expiration'],
+                            float(row['strike']),
+                            row['type'],
+                            float(row.get('last', 0)) if row.get('last') else None,
+                            float(row.get('mark', 0)) if row.get('mark') else None,
+                            float(row.get('bid', 0)) if row.get('bid') else None,
+                            int(row.get('bid_size', 0)) if row.get('bid_size') else None,
+                            float(row.get('ask', 0)) if row.get('ask') else None,
+                            int(row.get('ask_size', 0)) if row.get('ask_size') else None,
+                            int(row.get('volume', 0)) if row.get('volume') else None,
+                            int(row.get('open_interest', 0)) if row.get('open_interest') else None,
+                            row.get('date'),
+                            float(row.get('implied_volatility', 0)) if row.get('implied_volatility') else None,
+                            float(row.get('delta', 0)) if row.get('delta') else None,
+                            float(row.get('gamma', 0)) if row.get('gamma') else None,
+                            float(row.get('theta', 0)) if row.get('theta') else None,
+                            float(row.get('vega', 0)) if row.get('vega') else None,
+                            float(row.get('rho', 0)) if row.get('rho') else None,
+                            row['contractID'],
+                            row.get('date')
+                        ))
                         updated += 1
-                        
-                except Exception as e:
-                    print(f"  ⚠️  Skipping contract {row.get('contractID')}: {e}")
-                    continue
+                    else:
+                        # Insert new
+                        cursor.execute("""
+                            INSERT INTO options_data_historical (
+                                contractid, symbol, expiration, strike, type,
+                                last, mark, bid, bid_size, ask, ask_size,
+                                volume, open_interest, date,
+                                implied_volatility, delta, gamma, theta, vega, rho
+                            ) VALUES (
+                                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                            )
+                        """, (
+                            row['contractID'],
+                            row['symbol'],
+                            row['expiration'],
+                            float(row['strike']),
+                            row['type'],
+                            float(row.get('last', 0)) if row.get('last') else None,
+                            float(row.get('mark', 0)) if row.get('mark') else None,
+                            float(row.get('bid', 0)) if row.get('bid') else None,
+                            int(row.get('bid_size', 0)) if row.get('bid_size') else None,
+                            float(row.get('ask', 0)) if row.get('ask') else None,
+                            int(row.get('ask_size', 0)) if row.get('ask_size') else None,
+                            int(row.get('volume', 0)) if row.get('volume') else None,
+                            int(row.get('open_interest', 0)) if row.get('open_interest') else None,
+                            row.get('date'),
+                            float(row.get('implied_volatility', 0)) if row.get('implied_volatility') else None,
+                            float(row.get('delta', 0)) if row.get('delta') else None,
+                            float(row.get('gamma', 0)) if row.get('gamma') else None,
+                            float(row.get('theta', 0)) if row.get('theta') else None,
+                            float(row.get('vega', 0)) if row.get('vega') else None,
+                            float(row.get('rho', 0)) if row.get('rho') else None
+                        ))
+                        inserted += 1
+                
+                # COMMIT THIS ROW
+                conn.commit()
+                
+            except Exception as e:
+                # ROLLBACK THIS ROW ONLY
+                conn.rollback()
+                error_msg = f"Contract {row.get('contractID', 'UNKNOWN')}: {str(e)}"
+                errors.append(error_msg)
+                skipped += 1
+                
+                # Show first error immediately
+                if len(errors) == 1:
+                    print(f"  ❌ First error: {error_msg}")
+    
+    if errors and len(errors) <= 5:
+        print(f"\n  ⚠️  Errors encountered:")
+        for err in errors[:5]:
+            print(f"     - {err}")
+        if len(errors) > 5:
+            print(f"     ... and {len(errors) - 5} more errors")
     
     return inserted, updated
 
