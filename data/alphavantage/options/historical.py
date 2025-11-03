@@ -32,7 +32,7 @@ def fetch_historical_options(
         Tuple of (DataFrame, error_message)
         
     DataFrame columns:
-        - contractID, symbol, expiration, strike, type
+        - contract_id, symbol, expiration, strike, type
         - last, mark, bid, bid_size, ask, ask_size
         - volume, open_interest
         - delta, gamma, theta, vega, rho
@@ -114,7 +114,7 @@ def insert_options_data(
                     # Check if contract already exists
                     cursor.execute(
                         "SELECT 1 FROM options_data_historical WHERE contractid = %s AND date = %s",
-                        (row['contractID'], row.get('date'))
+                        (row['contract_id'], row.get('date'))
                     )
                     
                     if cursor.fetchone():
@@ -141,7 +141,7 @@ def insert_options_data(
                                 theta = %s,
                                 vega = %s,
                                 rho = %s
-                            WHERE contractid = %s AND date = %s
+                            WHERE contract_id = %s AND date = %s
                         """, (
                             row['symbol'],
                             row['expiration'],
@@ -162,7 +162,7 @@ def insert_options_data(
                             float(row.get('theta', 0)) if row.get('theta') else None,
                             float(row.get('vega', 0)) if row.get('vega') else None,
                             float(row.get('rho', 0)) if row.get('rho') else None,
-                            row['contractID'],
+                            row['contract_id'],
                             row.get('date')
                         ))
                         updated += 1
@@ -170,7 +170,7 @@ def insert_options_data(
                         # Insert new
                         cursor.execute("""
                             INSERT INTO options_data_historical (
-                                contractid, symbol, expiration, strike, type,
+                                contract_id, symbol, expiration, strike, type,
                                 last, mark, bid, bid_size, ask, ask_size,
                                 volume, open_interest, date,
                                 implied_volatility, delta, gamma, theta, vega, rho
@@ -178,7 +178,7 @@ def insert_options_data(
                                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                             )
                         """, (
-                            row['contractID'],
+                            row['contract_id'],
                             row['symbol'],
                             row['expiration'],
                             float(row['strike']),
@@ -207,7 +207,7 @@ def insert_options_data(
             except Exception as e:
                 # ROLLBACK THIS ROW ONLY
                 conn.rollback()
-                error_msg = f"Contract {row.get('contractID', 'UNKNOWN')}: {str(e)}"
+                error_msg = f"Contract {row.get('contract_id', 'UNKNOWN')}: {str(e)}"
                 errors.append(error_msg)
                 skipped += 1
                 
