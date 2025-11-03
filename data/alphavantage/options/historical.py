@@ -113,8 +113,8 @@ def insert_options_data(
                 with conn.cursor() as cursor:
                     # Check if contract already exists
                     cursor.execute(
-                        "SELECT 1 FROM options_data_historical WHERE contractid = %s AND date = %s",
-                        (row['contract_id'], row.get('date'))
+                        "SELECT 1 FROM options_data_historical WHERE contract_id = %s AND date = %s",
+                        (row['contractID'], row.get('date'))
                     )
                     
                     if cursor.fetchone():
@@ -162,7 +162,7 @@ def insert_options_data(
                             float(row.get('theta', 0)) if row.get('theta') else None,
                             float(row.get('vega', 0)) if row.get('vega') else None,
                             float(row.get('rho', 0)) if row.get('rho') else None,
-                            row['contract_id'],
+                            row['contractID'],
                             row.get('date')
                         ))
                         updated += 1
@@ -178,7 +178,7 @@ def insert_options_data(
                                 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                             )
                         """, (
-                            row['contract_id'],
+                            row['contractID'],
                             row['symbol'],
                             row['expiration'],
                             float(row['strike']),
